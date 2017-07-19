@@ -1,7 +1,7 @@
 // alert ('hi')
 do {
-    var mois = parseInt (prompt ('saisissez'));
-} while (isNaN(mois))
+    var mois= parseInt (prompt ('Quel mois choisissez-vous ?', '<saisissez un nombre de 1 à 12>'));
+} while (isNaN(mois) || (mois < 1) || (mois > 12));
 
 switch (mois) {
     case 1:
@@ -24,13 +24,6 @@ switch (mois) {
     case 11 :
         nbJour=30;
         break;
-
-    default:
-        nbJour=0;
 }
 
-if (nbJour==0) {
-    document.write ('le mois ' + mois + " n'existe pas");
-} else {
     document.write ('le mois ' + mois + ' a ' + nbJour + ' jours');
-}

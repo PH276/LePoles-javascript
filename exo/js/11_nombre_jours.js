@@ -13,22 +13,21 @@ do {
 } while (isNaN(parseInt(s)) || s>59);
 
 heure = h + 'h' + m + ':' + s;
-if (s+1 != 60) {
+if (s < 59) {
     s++;
 } else {
     s=0;
-    if (m+1 != 60){
+    if (m < 59){
         m++;
     } else {
         m=0;
-        if (h+1 != 24) {
-
+        if (h < 23) {
+            h++;
         }
-
+        else{
+            h=0;
+        }
+    }
 }
-
-
-
-
 
 document.write(heure + ' plus une seconde donne : ' + h + 'h' + m + ':' + s);
