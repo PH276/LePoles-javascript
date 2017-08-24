@@ -5,7 +5,7 @@ form.addEventListener("submit", function (e) {
     e.preventDefault();
     // Récupération des champs du formulaire dans l'objet FormData
     var data = new FormData(form);
-    console.log(data);
+    console.log("data : "+data);
     // Envoi des données du formulaire au serveur
     // La fonction callback est ici vide
     ajaxPost("http://oc-jswebsrv.herokuapp.com/article" , data, function () {

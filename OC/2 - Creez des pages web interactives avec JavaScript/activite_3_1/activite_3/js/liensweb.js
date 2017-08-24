@@ -1,13 +1,9 @@
 /*
 Activité 3
 */
-// variables
-var contenuElt = document.getElementById("contenu"); // élément où sera affichés les liens
-var ajouterLienElt = document.getElementById("ajoutLien"); // Bouton 'Ajouter un lien'
-var urlLiens = "https://oc-jswebsrv.herokuapp.com/api/liens"; // url du serveurs où sont stocés les liens
 
-// fonctions
-// crée un élément pour ajouter un nouveau lien
+// Crée et renvoie un élément DOM affichant les données d'un lien
+// Le paramètre lien est un objet JS représentant un lien
 function creerElementLien(lien) {
     var titreElt = document.createElement("a");
     titreElt.href = lien.url;
@@ -37,7 +33,19 @@ function creerElementLien(lien) {
     return divLienElt;
 }
 
-// crée un élément input pour un formulaire
+var contenuElt = document.getElementById("contenu");
+
+// Récupération des liens à afficher et ajout d'un élément au DOM pour chaque lien
+ajaxGet("https://oc-jswebsrv.herokuapp.com/api/liens", function (response) {
+    var listeLiens = JSON.parse(response);
+
+    listeLiens.forEach(function (lien) {
+        var lienElt = creerElementLien(lien);
+        contenuElt.appendChild(lienElt);
+    });
+});
+
+// Crée et renvoie un élément DOM de type input
 function creerElementInput(placeholder, taille) {
     var inputElt = document.createElement("input");
     inputElt.type = "text";
@@ -47,28 +55,24 @@ function creerElementInput(placeholder, taille) {
     return inputElt;
 }
 
-// écouteur d'événement au clic sur le bouton 'Ajouter un lien'
+var ajouterLienElt = document.getElementById("ajoutLien");
+// Gère l'ajout d'un nouveau lien
 ajouterLienElt.addEventListener("click", function () {
-    // formulaire pour ajouter un nouveau lien
     var auteurElt = creerElementInput("Entrez votre nom", 20);
     var titreElt = creerElementInput("Entrez le titre du lien", 40);
     var urlElt = creerElementInput("Entrez l'URL du lien", 40);
+
     var ajoutElt = document.createElement("input");
-    var formAjoutElt = document.createElement("form");
-
-    // élément (paragraphe pour l'exercice) où est affiché le bouton 'Ajouter un lien'
-    var p = document.querySelector("p");
-
-    // bouton de validation du formulaire
     ajoutElt.type = "submit";
     ajoutElt.value = "Ajouter";
 
-    // champs et bouton du formulaire
+    var formAjoutElt = document.createElement("form");
     formAjoutElt.appendChild(auteurElt);
     formAjoutElt.appendChild(titreElt);
     formAjoutElt.appendChild(urlElt);
     formAjoutElt.appendChild(ajoutElt);
 
+    var p = document.querySelector("p");
     // Remplace le bouton d'ajout par le formulaire d'ajout
     p.replaceChild(formAjoutElt, ajouterLienElt);
 
@@ -90,35 +94,29 @@ ajouterLienElt.addEventListener("click", function () {
             auteur: auteurElt.value
         };
 
-        // envoie du nouveau lien au serveur
-        ajaxPost("https://oc-jswebsrv.herokuapp.com/api/lien", lien, function (reponse) {
-            var lienElt = creerElementLien(lien);
-            // Ajoute le nouveau lien en haut de la liste
-            contenuElt.insertBefore(lienElt, contenuElt.firstChild);
+        var lienElt = creerElementLien(lien);
 
-            // Création du message d'information
-            var infoElt = document.createElement("div");
-            infoElt.classList.add("info");
-            infoElt.textContent = "Le lien \"" + lien.titre + "\" a bien été ajouté.";
-            p.insertBefore(infoElt, ajouterLienElt);
-            // Suppresion du message après 2 secondes
-            setTimeout(function () {
-                p.removeChild(infoElt);
-            }, 2000);
-        },
-        true); // Valeur du paramètre isJson
+        // Envoi de l'objet lien au serveur
+        ajaxPost("https://oc-jswebsrv.herokuapp.com/api/lien", lien,
+            function () {
+
+                // Ajoute le nouveau lien en haut de la liste
+                contenuElt.insertBefore(lienElt, contenuElt.firstChild);
+
+                // Création du message d'information
+                var infoElt = document.createElement("div");
+                infoElt.classList.add("info");
+                infoElt.textContent = "Le lien \"" + lien.titre + "\" a bien été ajouté.";
+                p.insertBefore(infoElt, ajouterLienElt);
+                // Suppresion du message après 2 secondes
+                setTimeout(function () {
+                    p.removeChild(infoElt);
+                }, 2000);
+            },
+            true // Valeur du paramètre isJson
+        );
 
         // Remplace le formulaire d'ajout par le bouton d'ajout
         p.replaceChild(ajouterLienElt, formAjoutElt);
-    });
-});
-
-// récupération des liens stockés sur le serveur
-ajaxGet(urlLiens, function (reponse) {
-    var listeLiens = JSON.parse(reponse);
-    // affiche les liens trouvés sur le serveur
-    listeLiens.forEach(function (lien) {
-        var lienElt = creerElementLien(lien);
-        contenuElt.appendChild(lienElt);
     });
 });
