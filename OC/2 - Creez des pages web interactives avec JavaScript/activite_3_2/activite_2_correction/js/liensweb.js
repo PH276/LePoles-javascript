@@ -164,8 +164,7 @@ var listeLiens = new Array();
  
 // Exécute un appel AJAX GET
 // Prend en paramètres l'URL cible
-function ajaxGet(url)
-{
+function ajaxGet(url){
     var req = new XMLHttpRequest();
  
     req.open("GET", url);

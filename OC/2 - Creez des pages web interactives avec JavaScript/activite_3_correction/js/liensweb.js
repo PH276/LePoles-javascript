@@ -1,6 +1,9 @@
-/*
+/* 
 Activité 3
 */
+
+//var serveurUrl = "http://localhost/javascript-web-srv/web";
+var serveurUrl = "https://oc-jswebsrv.herokuapp.com";
 
 // Crée et renvoie un élément DOM affichant les données d'un lien
 // Le paramètre lien est un objet JS représentant un lien
@@ -21,7 +24,7 @@ function creerElementLien(lien) {
     ligneTitreElt.appendChild(titreElt);
     ligneTitreElt.appendChild(urlElt);
 
-    // Cette ligne contient l'auteur
+    // Cette ligne contient l'auteur et le nombre de commentaires
     var ligneDetailsElt = document.createElement("span");
     ligneDetailsElt.appendChild(document.createTextNode("Ajouté par " + lien.auteur));
 
@@ -34,11 +37,14 @@ function creerElementLien(lien) {
 }
 
 var contenuElt = document.getElementById("contenu");
-
-// Récupération des liens à afficher et ajout d'un élément au DOM pour chaque lien
-ajaxGet("https://oc-jswebsrv.herokuapp.com/api/liens", function (response) {
-    var listeLiens = JSON.parse(response);
-
+// Récupération de la liste des liens auprès du serveur
+ajaxGet(serveurUrl + "/api/liens", function (reponse) {
+    // Liste des liens Web à afficher. Un lien est défini par :
+    // - son titre
+    // - son URL
+    // - son auteur (la personne qui l'a publié)
+    var listeLiens = JSON.parse(reponse);
+    // Parcours de la liste des liens et ajout d'un élément au DOM pour chaque lien
     listeLiens.forEach(function (lien) {
         var lienElt = creerElementLien(lien);
         contenuElt.appendChild(lienElt);
@@ -77,9 +83,7 @@ ajouterLienElt.addEventListener("click", function () {
     p.replaceChild(formAjoutElt, ajouterLienElt);
 
     // Ajoute le nouveau lien
-    formAjoutElt.addEventListener("submit", function (e) {
-        e.preventDefault(); // Annule la publication du formulaire
-
+    formAjoutElt.addEventListener("submit", function () {
         var url = urlElt.value;
         // Si l'URL ne commence ni par "http://" ni par "https://"
         if ((url.indexOf("http://") !== 0) && (url.indexOf("https://") !== 0)) {
@@ -94,12 +98,10 @@ ajouterLienElt.addEventListener("click", function () {
             auteur: auteurElt.value
         };
 
-        var lienElt = creerElementLien(lien);
-
-        // Envoi de l'objet lien au serveur
-        ajaxPost("https://oc-jswebsrv.herokuapp.com/api/lie", lien,
-            function () {
-
+        // Envoi du nouveau lien au serveur
+        ajaxPost(serveurUrl + "/api/lien", lien,
+            function (reponse) {
+                var lienElt = creerElementLien(lien);
                 // Ajoute le nouveau lien en haut de la liste
                 contenuElt.insertBefore(lienElt, contenuElt.firstChild);
 
@@ -113,7 +115,7 @@ ajouterLienElt.addEventListener("click", function () {
                     p.removeChild(infoElt);
                 }, 2000);
             },
-            true // Valeur du paramètre isJson
+            true
         );
 
         // Remplace le formulaire d'ajout par le bouton d'ajout

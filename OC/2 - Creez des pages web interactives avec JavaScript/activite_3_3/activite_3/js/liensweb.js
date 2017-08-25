@@ -1,4 +1,4 @@
-/* 
+/*
 Activité 2
 */
 
@@ -6,23 +6,23 @@ Activité 2
 // - son titre
 // - son URL
 // - son auteur (la personne qui l'a publié)
-var listeLiens = [
-    {
-        titre: "So Foot",
-        url: "http://sofoot.com",
-        auteur: "yann.usaille"
-    },
-    {
-        titre: "Guide d'autodéfense numérique",
-        url: "http://guide.boum.org",
-        auteur: "paulochon"
-    },
-    {
-        titre: "L'encyclopédie en ligne Wikipedia",
-        url: "http://Wikipedia.org",
-        auteur: "annie.zette"
-    }
-];
+var listeLiens = [];
+//     {
+//         titre: "So Foot",
+//         url: "http://sofoot.com",
+//         auteur: "yann.usaille"
+//     },
+//     {
+//         titre: "Guide d'autodéfense numérique",
+//         url: "http://guide.boum.org",
+//         auteur: "paulochon"
+//     },
+//     {
+//         titre: "L'encyclopédie en ligne Wikipedia",
+//         url: "http://Wikipedia.org",
+//         auteur: "annie.zette"
+//     }
+// ];
 
 // Crée et renvoie un élément DOM affichant les données d'un lien
 // Le paramètre lien est un objet JS représentant un lien
@@ -96,7 +96,7 @@ ajouterLienElt.addEventListener("click", function () {
     // Ajoute le nouveau lien
     formAjoutElt.addEventListener("submit", function (e) {
         e.preventDefault(); // Annule la publication du formulaire
-        
+
         var url = urlElt.value;
         // Si l'URL ne commence ni par "http://" ni par "https://"
         if ((url.indexOf("http://") !== 0) && (url.indexOf("https://") !== 0)) {
@@ -128,13 +128,13 @@ ajaxGet("https://oc-jswebsrv.herokuapp.com/api/liens", function (liens) {
     //crée un tableau JS
     liens = JSON.parse(liens);
 
-    //recupere tous les liens poster 
+    //recupere tous les liens poster
     for (i = 0; i < liens.length; i++) {
-        var lienServ = {            
+        var lienServ = {
             titre: liens[liens.length - (i + 1)].titre,
             auteur: liens[liens.length - (i + 1)].auteur,
             url: liens[liens.length - (i + 1)].url
-        }        
+        }
         //crer le lien a partir de l'API
         var lienServElt = creerElementLien(lienServ);
 
@@ -146,7 +146,7 @@ ajaxGet("https://oc-jswebsrv.herokuapp.com/api/liens", function (liens) {
 // Recupère le dernier lien poster sur le serveur pour le rajouter dans 'p'
 function ajoutLienServ () {
     //recupére le lien depuis le serveur
-    ajaxGet("https://oc-jswebsrv.herokuapp.com/api/liens", 
+    ajaxGet("https://oc-jswebsrv.herokuapp.com/api/liens",
         function (data) {
             //crée un tableau JS
             data = JSON.parse(data);
